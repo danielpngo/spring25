@@ -5,6 +5,8 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
+let userNum = 0;
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
@@ -14,9 +16,12 @@ app.get('/', (req, res) => {
 // });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  userNum++;
+  socket.username = "User " + userNum;
+  console.log(socket.username + ' connected');
+  socket.emit('set username', socket.username);
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    console.log(socket.username + ' disconnected');
   });
 });
 
@@ -28,7 +33,7 @@ io.on('connection', (socket) => {
 
 io.on('connection', (socket) => {
   socket.on('chat message', (msg) => {
-    io.emit('chat message', getTime() + ": " + msg);
+    io.emit('chat message', getTime() + " " + socket.username + ": " + msg);
   });
 
   socket.on('typing', () => {

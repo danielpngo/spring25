@@ -23,6 +23,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       var socket = io();
+      var username = "";
 
       var messages = document.getElementById('messages');
       var form = document.getElementById('form');
@@ -31,12 +32,16 @@
       var timeout;
       var placeholder = null;
 
+      socket.on('set username', function(name) {
+        username = name;
+      })
+
       input.addEventListener('input', function() {
           socket.emit('typing');
 
           if (!placeholder) {
             placeholder = document.createElement('li');
-            placeholder.textContent = "...";
+            placeholder.textContent = username + " is typing...";
             placeholder.style.fontStyle = "italic";
             messages.appendChild(placeholder);
           }
@@ -82,7 +87,7 @@
       socket.on('typing', function() {
           if (!placeholder) {
             placeholder = document.createElement('li');
-            placeholder.textContent = "typing...";
+            placeholder.textContent = username + " is typing...";
             placeholder.style.fontStyle = "italic";
             messages.appendChild(placeholder);
           }
