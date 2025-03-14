@@ -30,6 +30,16 @@ io.on('connection', (socket) => {
   socket.on('chat message', (msg) => {
     io.emit('chat message', getTime() + ": " + msg);
   });
+
+  socket.on('typing', () => {
+    socket.broadcast.emit('typing');
+    console.log("typing now");
+  });
+  
+  socket.on('not typing', () => {
+    io.emit('not typing');
+    console.log("not typing anymore");
+  });
 });
 
 server.listen(3000, () => {
